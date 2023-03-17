@@ -25,14 +25,14 @@ func NewTask(name string) (*Task, error) {
 		Name:      name,
 		CreatedAt: time.Now(),
 	}
-	err := task.Validate()
+	err := task.ValidateTask()
 	if err != nil {
 		return nil, err
 	}
 	return task, nil
 }
 
-func (t *Task) Validate() error {
+func (t *Task) ValidateTask() error {
 	if t.ID.String() == "" {
 		return ErrIdisRequired
 	}
