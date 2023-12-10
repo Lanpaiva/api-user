@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"errors"
 	"unicode"
 
 	"github.com/lanpaiva/api-user/pkg/models"
@@ -19,18 +20,10 @@ func NewUser(name, email, password string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &User{
-		ID:       models.NewID(),
-		Name:     name,
-		Email:    email,
-		Password: string(hash),
-	}, nil
+	if password == "" {
+		return nil, errors.New("a senha não pode estar vazia")
+	}
 
-}
-
-func (u *User) ValidatePassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-	password = "Password123"
 	upperCase := false
 	lowerCase := false
 
@@ -44,6 +37,21 @@ func (u *User) ValidatePassword(password string) bool {
 			break
 		}
 	}
+
+	if !upperCase || !lowerCase {
+		return nil, errors.New("a senha deve conter pelo menos um caractere maiúsculo e um minúsculo")
+	}
+	return &User{
+		ID:       models.NewID(),
+		Name:     name,
+		Email:    email,
+		Password: string(hash),
+	}, nil
+
+}
+
+func (u *User) ValidatePassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 
 	return err == nil
 }

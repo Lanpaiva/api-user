@@ -10,9 +10,7 @@ type UserDB struct {
 }
 
 func NewUserDB(db *gorm.DB) *UserDB {
-	return &UserDB{
-		DB: db,
-	}
+	return &UserDB{DB: db}
 }
 
 func (u *UserDB) Create(user *entity.User) error {
